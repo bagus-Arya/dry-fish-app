@@ -1,21 +1,22 @@
 import React from 'react';
-import { FlatList, Text, View, StyleSheet } from 'react-native';
+import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 
 interface ListViewProps {
   data: Array<{ 
-        id: string; 
-        title: string; 
-        temp: string;
-    }>;
+    id: string; 
+    title: string; 
+    temp: string;
+  }>;
+  onItemPress?: (item: { id: string; title: string; temp: string }) => void; // Optional prop for item press handling
 }
 
-const ListView: React.FC<ListViewProps> = ({ data }) => {
+const ListView: React.FC<ListViewProps> = ({ data, onItemPress }) => {
   const renderItem = ({ item }: { item: { id: string; title: string; temp: string } }) => (
-    <View style={styles.item}>
+    <TouchableOpacity onPress={() => onItemPress && onItemPress(item)} style={styles.item}>
       <ThemedText type="body">{item.title}</ThemedText>
-      <ThemedText type="body">{item.temp} C</ThemedText>
-    </View>
+      <ThemedText type="body">{item.temp} °C</ThemedText>
+    </TouchableOpacity>
   );
 
   return (

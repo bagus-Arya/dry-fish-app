@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import { SafeAreaView, TouchableOpacity } from 'react-native';
+import { 
+  SafeAreaView, 
+  TouchableOpacity,
+  StyleSheet } from 'react-native';
 import ListView from '@/components/OngoingActivity';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { StyleSheet } from 'react-native';
+import StartSection from '@/components/ButtomSheet';
 
 export default function Activity() {
   // State to manage which section is visible
   const [visibleSection, setVisibleSection] = useState<'devices' | 'ongoing' | 'done' | null>(null);
+  const [showStartSection, setShowStartSection] = useState(false); 
+  const [selectedItem, setSelectedItem] = useState<{ title: string; temp: string } | null>(null);
 
   // Sample data for each section
   const devicesData = [
@@ -34,27 +39,56 @@ export default function Activity() {
     { id: '15', title: 'Done 3', temp: '33' },
   ];
 
+  const handleItemPress = (item: { id: string; title: string; temp: string }) => {
+    setSelectedItem({ title: item.title, temp: item.temp });
+    setShowStartSection(true);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView style={styles.container}>
         <TouchableOpacity onPress={() => setVisibleSection('devices')}>
-          <ThemedText type="kicker">Devices</ThemedText>
+          <ThemedText type="kicker"
+          style={{
+            color: visibleSection === 'devices' ? '#73ccff' : '#007ac1', 
+          }}
+          >Devices</ThemedText>
         </TouchableOpacity>
         
-
         <TouchableOpacity onPress={() => setVisibleSection('ongoing')}>
-          <ThemedText type="kicker">On Going</ThemedText>
+          <ThemedText type="kicker"
+            style={{
+              color: visibleSection === 'ongoing' ? '#73ccff' : '#007ac1', 
+            }}
+          >On Going</ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setVisibleSection('done')}>
-          <ThemedText type="kicker">Done</ThemedText>
+          <ThemedText type="kicker"
+            style={{
+              color: visibleSection === 'done' ? '#73ccff' : '#007ac1', 
+            }}
+          >Done</ThemedText>
         </TouchableOpacity>
       </ThemedView>
 
-        {visibleSection === 'ongoing' && <ListView data={ongoingData} />}
-        {visibleSection === 'devices' && <ListView data={devicesData} />}
-        {visibleSection === 'done' && <ListView data={doneData} />}
- 
+      {visibleSection === 'ongoing' && <ListView data={ongoingData} onItemPress={handleItemPress} />}
+      {visibleSection === 'devices' && <ListView data={devicesData} onItemPress={handleItemPress} />}
+      {visibleSection === 'done' && <ListView data={doneData} onItemPress={handleItemPress} />}
+      
+      {/* Render the StartSection component */}
+      <StartSection 
+        visible={showStartSection} 
+        onClose={() => {
+          // Delay the state update to allow the animation to complete
+          setTimeout(() => {
+            setShowStartSection(false);
+            setSelectedItem(null); // Reset selected item on close
+          }, 300); // Match the duration of the closing animation
+        }} 
+        itemDetails={selectedItem} // Pass selected item details
+      />
+
     </SafeAreaView>
   );
 }

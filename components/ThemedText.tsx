@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   kicker: {
     fontSize: 15,
-    fontWeight: 'light',
+    fontWeight: 'bold',
   },
   body: {
     fontSize: 20,

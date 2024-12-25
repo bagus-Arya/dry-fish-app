@@ -3,6 +3,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -24,6 +25,9 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -34,6 +38,9 @@ export default function TabLayout() {
           headerTitleStyle: {
             fontSize: 27, 
           },
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'list-sharp' : 'list-outline'} color={color} size={24} />
+          ),
         }}
       />
     </Tabs>
