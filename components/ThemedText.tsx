@@ -5,7 +5,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'kicker' | 'body';
+  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'kicker' | 'body' | 'titleLearning' | 'description' | 'stepsTitle' | 'stepsDescription';
 };
 
 export function ThemedText({
@@ -28,6 +28,10 @@ export function ThemedText({
         type === 'link' ? styles.link : undefined,
         type === 'kicker' ? styles.kicker : undefined,
         type === 'body' ? styles.body : undefined,
+        type === 'titleLearning' ? styles.titleLearning : undefined,
+        type === 'description' ? styles.description : undefined,
+        type === 'stepsTitle' ? styles.stepsTitle : undefined,
+        type === 'stepsDescription' ? styles.stepsDescription : undefined,
         style,
       ]}
       {...rest}
@@ -68,5 +72,26 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'light',
     color: '#ffffff',
+  },
+  titleLearning: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  description: {
+    fontSize: 16,
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    lineHeight: 24,
+  },
+  stepsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  stepsDescription: {
+    fontSize: 16,
+    lineHeight: 22,
   },
 });

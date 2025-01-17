@@ -5,11 +5,15 @@ import {
   FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { User, logout } from '@/services/apiAuth';
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Home() {
   interface ListItem {
@@ -17,6 +21,14 @@ export default function Home() {
     title: string;
     description: string;
   }
+
+  const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [userId, setUserId] = useState<number | null>(null);
+    const [user, setUser] = useState<User | null>(null);
+    const router = useRouter();
+
+  const colorScheme = useColorScheme();
   
   const data: ListItem[] = [
     { id: '1', title: 'Ikan tongkol Rp.10,000', description: 'harga ikan melonjak' },
@@ -41,12 +53,54 @@ export default function Home() {
     </View>
   );
   
+  useEffect(() => {
+    const getUserId = async () => {
+        try {
+            const userDataString = await AsyncStorage.getItem('userData');
+            if (userDataString) {
+                const userData = JSON.parse(userDataString);
+                setUserId(userData.id);
+            } else {
+                throw new Error('User  data not found');
+            }
+        } catch (err) {
+            // console.error('Error retrieving user ID:', err);
+            setError('Failed to retrieve user ID');
+        }
+    };
+
+    getUserId();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      // Clear all stored data
+      await AsyncStorage.clear();
+      
+      // Reset auth state
+      setUser(null);
+      
+      // Navigate to login screen
+      router.replace('/(routers)/auth/login');
+      
+    } catch (error) {
+      console.log('Logout error:', error);
+      // Force navigation to login even if error occurs
+      router.replace('/(routers)/auth/login');
+    }
+  };
+  
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemedView style={styles.container}>
         <ThemedView style={styles.headerContainer}>
           <LinearGradient
-            colors={['#38b6ff', '#1E90FF']}
+            colors={
+              colorScheme === 'dark' 
+                ? ['#0F2027', '#203A43', '#2C5364'] // Dark mode colors
+                : ['#0F78BE', '#1BFFFF'] // Light mode colors
+            }
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.gradient}
@@ -58,6 +112,7 @@ export default function Home() {
               </View>
               <TouchableOpacity 
                 style={styles.logoutButton} 
+                onPress={handleLogout}
               >
                 <MaterialIcons name='logout' size={30} color="#fff" />
               </TouchableOpacity>
@@ -66,18 +121,36 @@ export default function Home() {
             {/* TODO: add image fail  */}
             
             <View style={styles.quickAccessContainer}>
-              <TouchableOpacity style={styles.quickAccessItem}>
-                <MaterialIcons name="add-circle-outline" size={30} color="#38b6ff" />
-                <ThemedText style={styles.quickAccessText}>Abon Ikan</ThemedText>
-              </TouchableOpacity>
+            <TouchableOpacity style={styles.quickAccessItem}>
+              <Image
+                source={{
+                  width: 20,
+                  height: 30,
+                  uri: 'https://reactnative.dev/img/tiny_logo.png'
+                }}
+              ></Image>
+              <ThemedText style={styles.quickAccessText}>Abon Ikan</ThemedText>
+            </TouchableOpacity>
               
               <TouchableOpacity style={styles.quickAccessItem}>
-                <MaterialIcons name="list-alt" size={30} color="#38b6ff" />
+                <Image
+                  source={{
+                    width: 20,
+                    height: 30,
+                    uri: 'https://reactnative.dev/img/tiny_logo.png'
+                  }}
+                ></Image>
                 <ThemedText style={styles.quickAccessText}>Ikan Kering</ThemedText>
               </TouchableOpacity>
               
               <TouchableOpacity style={styles.quickAccessItem}>
-                <MaterialIcons name="analytics" size={30} color="#38b6ff" />
+                <Image
+                  source={{
+                    width: 20,
+                    height: 30,
+                    uri: 'https://reactnative.dev/img/tiny_logo.png'
+                  }}
+                ></Image>
                 <ThemedText style={styles.quickAccessText}>Ikan Segar</ThemedText>
               </TouchableOpacity>
             </View>

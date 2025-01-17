@@ -24,7 +24,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: '',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
           ),
@@ -34,12 +34,25 @@ export default function TabLayout() {
         name="activity"
         options={{
           headerShown: true,
-          title: 'Activity',
+          title: '',
           headerTitleStyle: {
             fontSize: 27, 
           },
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'list-sharp' : 'list-outline'} color={color} size={24} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="learning"
+        options={{
+          headerShown: true,
+          title: '',
+          headerTitleStyle: {
+            fontSize: 27, 
+          },
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'book-sharp' : 'book-outline'} color={color} size={24} />
           ),
         }}
       />
