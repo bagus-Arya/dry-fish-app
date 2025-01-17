@@ -11,7 +11,7 @@ const tutorialData = [
     id: 1,
     title: "Welcome to Fish Drying",
     description: "Learn the art of perfectly drying fish using modern techniques.",
-    image: require('@/assets/images/cooking.jpg'),
+    image: require('@/assets/images/2.png'),
     steps: [
       "Prepare your workspace and gather all necessary materials.",
       "Select fresh fish for drying.",
@@ -28,7 +28,7 @@ const tutorialData = [
     id: 2,
     title: "Temperature Control",
     description: "Maintain optimal temperature between 35-40°C for best results.",
-    image: require('@/assets/images/cooking.jpg'),
+    image: require('@/assets/images/1.png'),
     steps: [
       "Set the drying chamber to the desired temperature.",
       "Use a thermometer to monitor the temperature regularly."
@@ -38,7 +38,7 @@ const tutorialData = [
     id: 3,
     title: "Monitor Progress",
     description: "Track drying progress through our smart monitoring system.",
-    image: require('@/assets/images/cooking.jpg'),
+    image: require('@/assets/images/3.png'),
     steps: [
       "Check the fish every few hours.",
       "Adjust the temperature if necessary."
@@ -48,7 +48,7 @@ const tutorialData = [
     id: 4,
     title: "Step 1: Prepare the Fish",
     description: "Clean the fish thoroughly and remove any scales.",
-    image: require('@/assets/images/cooking.jpg'),
+    image: require('@/assets/images/4.png'),
     steps: [
       "Rinse the fish under cold water.",
       "Use a knife to scrape off any scales."
@@ -58,30 +58,10 @@ const tutorialData = [
     id: 5,
     title: "Step 2: Season the Fish",
     description: "Apply your favorite seasoning and let it marinate for at least 30 minutes.",
-    image: require('@/assets/images/cooking.jpg'),
+    image: require('@/assets/images/5.png'),
     steps: [
       "Mix your seasoning in a bowl.",
       "Rub the seasoning onto the fish evenly."
-    ]
-  },
-  {
-    id: 6,
-    title: "Step 3: Dry the Fish",
-    description: "Place the fish in the drying chamber and set the temperature.",
-    image: require('@/assets/images/cooking.jpg'),
-    steps: [
-      "Arrange the fish in the drying chamber without overlapping.",
-      "Set the timer for the drying process."
-    ]
-  },
-  {
-    id: 7,
-    title: "Step 4: Store the Dried Fish",
-    description: "Once dried, store the fish in an airtight container.",
-    image: require('@/assets/images/cooking.jpg'),
-    steps: [
-      "Let the fish cool down before storing.",
-      "Place the dried fish in a vacuum-sealed bag."
     ]
   }
 ];
