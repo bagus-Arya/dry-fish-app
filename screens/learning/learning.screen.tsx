@@ -9,39 +9,43 @@ const { width } = Dimensions.get('window');
 const tutorialData = [
   {
     id: 1,
-    title: "Welcome to Fish Drying",
-    description: "Learn the art of perfectly drying fish using modern techniques.",
+    title: "Selamat Datang Dryfiners",
+    description: "Yuk, belajar cara mengeringkan ikan dengan teknologi.",
     image: require('@/assets/images/2.png'),
     steps: [
-      "Prepare your workspace and gather all necessary materials.",
-      "Select fresh fish for drying.",
-      "Ensure your drying equipment is clean and ready.",
-      "Prepare your workspace and gather all necessary materials.",
-      "Select fresh fish for drying.",
-      "Ensure your drying equipment is clean and ready.",
-      "Prepare your workspace and gather all necessary materials.",
-      "Select fresh fish for drying.",
-      "Ensure your drying equipment is clean and ready."
+      "Siapin dulu alat dan bahannya.",
+      "Pilih ikan yang mau dikeringkan.",
+      "Pastikan alat dan bahan sudah siap.",
+      "Ikan fillet siap di pajang didalam alat.",
+      "Jangan lupa atur dulu titik nol timbangannya.",
+      "Setalah itu baru taruh ikan fillet didalam alat.",
+      "Kamu bisa tinggal sambil ngerjain aktifitas lain.",
+      "Kalo udah kering langsung diangkat ya, nanti malah jelek lo hasilnya."
     ]
   },
   {
     id: 2,
-    title: "Temperature Control",
-    description: "Maintain optimal temperature between 35-40°C for best results.",
+    title: "Ini nih cara lain mengeringkan ikan.",
+    description: "Cara traditional juga gak kalah menarik.",
     image: require('@/assets/images/1.png'),
     steps: [
-      "Set the drying chamber to the desired temperature.",
-      "Use a thermometer to monitor the temperature regularly."
+      "Siapin dulu nampan atau alas untuk jemur ikan.",
+      "Fillet ikan dan kasi garam secukupnya. Proses penggaraman bisa membantu memperlambat perkembangan bakteri.",
+      "Setalah itu taruh di nampan yang sudah disiapin tadi.",
+      "Jangan lupa dijemur dengan posisi bolak balik, biar keringnya merata.",
+      "Cuaca hujan siap-siap angkat!, nanti rusak ikan yang sudah dikeringkan tadi."
     ]
   },
   {
     id: 3,
-    title: "Monitor Progress",
-    description: "Track drying progress through our smart monitoring system.",
+    title: "Gimana sih ikan fillet itu?",
+    description: "Kalo kamu belum tau ikan fillet, diatas sudah ada lo gambarnya.",
     image: require('@/assets/images/3.png'),
     steps: [
-      "Check the fish every few hours.",
-      "Adjust the temperature if necessary."
+      "Bikinnya gampang kok.",
+      "Belah 2 di bagian tengah ikan.",
+      "Lalu bersikan ikannya.",
+      "Jangan lupa buang insangnya, kadang bikin alergi.",
     ]
   },
   {

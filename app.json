@@ -4,7 +4,7 @@
     "slug": "dry-fish-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/dry-fitech@2x.png",
+    "icon": "./assets/images/dryfitech.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,7 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/dry-fitech@2x.png",
+        "foregroundImage": "./assets/images/dryfitech.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.zentexe.dryfishapp"
@@ -29,7 +29,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/dry-fitech@2x.png",
+          "image": "./assets/images/dryfitech.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"

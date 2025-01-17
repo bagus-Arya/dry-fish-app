@@ -1,11 +1,7 @@
-import { 
-  StyleSheet,
-  View,
-  Image,
-  FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import React, { useEffect, useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -14,82 +10,84 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { User, logout } from '@/services/apiAuth';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { fetchDeviceList, DeviceResponse, DeviceLogs } from '@/services/apiLogMachine';
 
 export default function Home() {
-  interface ListItem {
-    id: string;
-    title: string;
-    description: string;
-  }
-
   const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [userId, setUserId] = useState<number | null>(null);
-    const [user, setUser] = useState<User | null>(null);
-    const router = useRouter();
-
+  const [user, setUser ] = useState<User | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [deviceData, setDeviceData] = useState<DeviceLogs[]>([]);
+  const router = useRouter();
   const colorScheme = useColorScheme();
-  
-  const data: ListItem[] = [
-    { id: '1', title: 'Ikan tongkol Rp.10,000', description: 'harga ikan melonjak' },
-    { id: '2', title: 'Item 2', description: 'Description 2' },
-    { id: '3', title: 'Item 3', description: 'Description 3' },
-    { id: '4', title: 'Item 4', description: 'Description 4' },
-    { id: '5', title: 'Item 5', description: 'Description 5' },
-    { id: '6', title: 'Item 1', description: 'Description 1' },
-    { id: '7', title: 'Item 2', description: 'Description 2' },
-    { id: '8', title: 'Item 3', description: 'Description 3' },
-    { id: '9', title: 'Item 4', description: 'Description 4' },
-    { id: '10', title: 'Item 5', description: 'Description 5' },
-  ];
-  
-  const renderItem = ({ item }: { item: ListItem }) => (
-    <View style={styles.itemContainer}>
-      <View style={styles.itemContent}>
-        <ThemedText type='subtitle' style={styles.itemTitle}>{item.title}</ThemedText>
-        <ThemedText style={styles.itemDescription}>{item.description}</ThemedText>
-      </View>
-      <MaterialIcons name="chevron-right" size={24} color="#666" />
-    </View>
-  );
-  
+
   useEffect(() => {
-    const getUserId = async () => {
-        try {
-            const userDataString = await AsyncStorage.getItem('userData');
-            if (userDataString) {
-                const userData = JSON.parse(userDataString);
-                setUserId(userData.id);
-            } else {
-                throw new Error('User  data not found');
-            }
-        } catch (err) {
-            // console.error('Error retrieving user ID:', err);
-            setError('Failed to retrieve user ID');
+    const loadUserData = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('userData');
+        if (userData) {
+          setUser (JSON.parse(userData));
+        } else {
+          setLoading(false);
         }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
     };
 
-    getUserId();
+    loadUserData();
+  }, []);
+
+  useEffect(() => {
+    const loadDeviceData = async () => {
+      try {
+        const response: DeviceResponse = await fetchDeviceList();
+        setDeviceData(response.data);
+      } catch (err) {
+        setError('Failed to fetch device data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDeviceData();
   }, []);
 
   const handleLogout = async () => {
     try {
-      // Clear all stored data
       await AsyncStorage.clear();
-      
-      // Reset auth state
-      setUser(null);
-      
-      // Navigate to login screen
-      router.replace('/(routers)/auth/login');
-      
+      await logout();
+      router.replace('/(routers)/auth/login'); 
     } catch (error) {
-      console.log('Logout error:', error);
-      // Force navigation to login even if error occurs
-      router.replace('/(routers)/auth/login');
+      router.replace('/(routers)/auth/login'); 
     }
   };
-  
+
+  const renderItem = ({ item }: { item: DeviceLogs }) => (
+    <View style={styles.itemContainer}>
+      <View style={styles.itemContent}>
+        <ThemedText type='subtitle' style={styles.itemTitle}>{item.machine_ID}</ThemedText>
+        <ThemedText style={styles.itemDescription}>Temp: {item.temp}°C, Humidity: {item.humid}%</ThemedText>
+        <ThemedText style={styles.itemDescription}>Weight: {item.weight}g, Light: {item.light}lux</ThemedText>
+      </View>
+      <MaterialIcons name="chevron-right" size={24} color="#666" />
+    </View>
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <ThemedText style={styles.errorText}>{error}</ThemedText>
+      </View>
+    );
+  }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -107,8 +105,8 @@ export default function Home() {
           >
             <View style={styles.welcomeHeader}>
               <View>
-                <ThemedText style={styles.headerText} type="subtitle">Hi, heo</ThemedText>
-                <ThemedText style={styles.headerText} type="subtitle">heo@mail.com</ThemedText>
+                <ThemedText style={styles.headerText} type="subtitle">Hi, {user ? user.name : 'Guest'}</ThemedText>
+                <ThemedText style={styles.headerText} type="subtitle">{user ? user.email : 'Please log in'}</ThemedText>
               </View>
               <TouchableOpacity 
                 style={styles.logoutButton} 
@@ -117,51 +115,13 @@ export default function Home() {
                 <MaterialIcons name='logout' size={30} color="#fff" />
               </TouchableOpacity>
             </View>
-
-            {/* TODO: add image fail  */}
-            
-            <View style={styles.quickAccessContainer}>
-            <TouchableOpacity style={styles.quickAccessItem}>
-              <Image
-                source={{
-                  width: 20,
-                  height: 30,
-                  uri: 'https://reactnative.dev/img/tiny_logo.png'
-                }}
-              ></Image>
-              <ThemedText style={styles.quickAccessText}>Abon Ikan</ThemedText>
-            </TouchableOpacity>
-              
-              <TouchableOpacity style={styles.quickAccessItem}>
-                <Image
-                  source={{
-                    width: 20,
-                    height: 30,
-                    uri: 'https://reactnative.dev/img/tiny_logo.png'
-                  }}
-                ></Image>
-                <ThemedText style={styles.quickAccessText}>Ikan Kering</ThemedText>
-              </TouchableOpacity>
-              
-              <TouchableOpacity style={styles.quickAccessItem}>
-                <Image
-                  source={{
-                    width: 20,
-                    height: 30,
-                    uri: 'https://reactnative.dev/img/tiny_logo.png'
-                  }}
-                ></Image>
-                <ThemedText style={styles.quickAccessText}>Ikan Segar</ThemedText>
-              </TouchableOpacity>
-            </View>
-
           </LinearGradient>
         </ThemedView>
 
         <FlatList
-          data={data}
+          data={deviceData}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()} // Ensure the key is a string
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
         />
@@ -179,11 +139,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
     overflow: 'hidden',
   },
-  logo: {
-    width: 100,
-    height: 100,
-    resizeMode: 'contain',
-},
   gradient: {
     padding: 20,
     paddingTop: 40,
@@ -202,31 +157,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 15,
   },
-  quickAccessContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 20,
-    backgroundColor: '#fff',
-    marginTop: 20,
-    borderRadius: 15,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  quickAccessItem: {
-    alignItems: 'center',
-    padding: 20,
-    height: 100,
-    justifyContent: 'center',
-  },
-  quickAccessText: {
-    marginTop: 10,
-    fontSize: 14,
-    color: '#666',
-    fontWeight: '500',
-  },  
   listContainer: {
     padding: 16,
   },
@@ -253,5 +183,18 @@ const styles = StyleSheet.create({
   },
   itemDescription: {
     color: '#666',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: 'red',
   },
 });

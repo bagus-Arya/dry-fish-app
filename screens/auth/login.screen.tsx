@@ -29,35 +29,24 @@ export default function Login() {
     }
   
     setIsLoading(true);
-    
+  
     try {
       const response = await login({ email, password });
-      
+      // console.log('Login response:', response);
+  
       if (response.status) {
-        // Store all necessary auth data
         await Promise.all([
           AsyncStorage.setItem('isLoggedIn', 'true'),
           AsyncStorage.setItem('userToken', response.token),
           AsyncStorage.setItem('userEmail', email),
           AsyncStorage.setItem('userData', JSON.stringify(response.user))
         ]);
-  
-        // Clear form fields
-        setEmail('');
-        setPassword('');
-        
-        // Navigate to home tab
         router.replace('/(tabs)');
       } else {
         Alert.alert('Error', response.message || 'Invalid credentials');
       }
     } catch (error: any) {
-      console.log('Login attempt failed:', {
-        error,
-        timestamp: new Date().toISOString(),
-        emailAttempt: email
-      });
-      
+      console.error('Login error:', error); // Log the error for debugging
       Alert.alert('Error', 'Unable to connect to server. Please try again.');
     } finally {
       setIsLoading(false);
