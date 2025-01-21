@@ -15,7 +15,6 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
             position: 'absolute',
           },
           default: {},
@@ -33,11 +32,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="activity"
         options={{
-          headerShown: true,
+          headerShown: false,
           title: '',
-          headerTitleStyle: {
-            fontSize: 27, 
-          },
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'list-sharp' : 'list-outline'} color={color} size={24} />
           ),
@@ -46,11 +42,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="learning"
         options={{
-          headerShown: true,
+          headerShown: false,
           title: '',
-          headerTitleStyle: {
-            fontSize: 27, 
-          },
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'book-sharp' : 'book-outline'} color={color} size={24} />
           ),

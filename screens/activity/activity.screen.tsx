@@ -3,13 +3,14 @@ import {
   SafeAreaView, 
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
-  View 
+  Dimensions
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import ListView from '@/components/OngoingActivity';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import StartSection from '@/components/ButtomSheet';
+import { useColorScheme } from '@/hooks/useColorScheme';
 import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedGestureHandler,
@@ -25,7 +26,7 @@ export default function Activity() {
   const [visibleSection, setVisibleSection] = useState<'devices' | 'ongoing' | 'done'>('devices');
   const [showStartSection, setShowStartSection] = useState(false);
   const [selectedItem, setSelectedItem] = useState<{ title: string; temp: string } | null>(null);
-
+  const colorScheme = useColorScheme();
   const translateX = useSharedValue(0);
   const sections: ('devices' | 'ongoing' | 'done')[] = ['devices', 'ongoing', 'done'];
 
@@ -55,27 +56,15 @@ export default function Activity() {
   }));
 
   const devicesData = [
-    { id: '1', title: 'Device 1', temp: '25' },
-    { id: '2', title: 'Device 2', temp: '26' },
-    { id: '3', title: 'Device 3', temp: '27' },
+    { id: '1', title: 'AF123', temp: '33' },
   ];
 
   const ongoingData = [
-    { id: '1', title: 'Ongoing 1', temp: '28' },
-    { id: '2', title: 'Ongoing 2', temp: '29' },
-    { id: '3', title: 'Ongoing 3', temp: '30' },
+    { id: '1', title: 'AF123', temp: '28' },
   ];
 
   const doneData = [
-    { id: '1', title: 'Done 1', temp: '31' },
-    { id: '2', title: 'Done 2', temp: '32' },
-    { id: '3', title: 'Done 3', temp: '33' },
-    { id: '4', title: 'Done 1', temp: '31' },
-    { id: '5', title: 'Done 2', temp: '32' },
-    { id: '6', title: 'Done 3', temp: '33' },
-    { id: '7', title: 'Done 1', temp: '31' },
-    { id: '8', title: 'Done 2', temp: '32' },
-    { id: '9', title: 'Done 3', temp: '33' },
+    { id: '1', title: 'AF123', temp: '31' },
   ];
 
   const handleItemPress = (item: { id: string; title: string; temp: string }) => {
@@ -85,43 +74,64 @@ export default function Activity() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ThemedView style={styles.container}>
+      <LinearGradient
+        colors={
+          colorScheme === 'dark' 
+            ? ['#0F2027', '#203A43', '#2C5364'] // Dark mode colors
+            : ['#0F78BE', '#1BFFFF'] // Light mode colors
+        }
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.container}
+      >
         {sections.map((section, index) => (
           <TouchableOpacity 
             key={section}
             onPress={() => {
               setVisibleSection(section);
-              translateX.value = withSpring(-index * SCREEN_WIDTH);
+              translateX.value = withSpring(-index * SCREEN_WIDTH, {
+                damping: 20,
+                stiffness: 90
+              });
             }}
+            style={[
+              styles.sectionButton,
+              visibleSection === section && styles.activeSectionButton
+            ]}
           >
             <ThemedText 
-              type="kicker"
-              style={{
-                color: visibleSection === section ? '#73ccff' : '#007ac1',
-              }}
+              style={[
+                styles.sectionText,
+                visibleSection === section ? 
+                  styles.activeSectionText : 
+                  styles.inactiveSectionText
+              ]}
             >
               {section.charAt(0).toUpperCase() + section.slice(1)}
             </ThemedText>
           </TouchableOpacity>
         ))}
-      </ThemedView>
+      </LinearGradient>
 
       <GestureHandlerRootView style={styles.gestureContainer}>
         <PanGestureHandler 
-           activeOffsetX={[-10, 10]}
-           failOffsetY={[-5, 5]} 
-           onGestureEvent={gestureHandler}
+          activeOffsetX={[-10, 10]}
+          failOffsetY={[-5, 5]} 
+          onGestureEvent={gestureHandler}
         >
           <Animated.View style={[styles.contentContainer, animatedStyle]}>
-            <View style={styles.pageContainer}>
-              <ListView data={devicesData} onItemPress={handleItemPress} />
-            </View>
-            <View style={styles.pageContainer}>
-              <ListView data={ongoingData} onItemPress={handleItemPress} />
-            </View>
-            <View style={styles.pageContainer}>
-              <ListView data={doneData} onItemPress={handleItemPress} />
-            </View>
+            {sections.map((section, index) => (
+              <ThemedView key={section} style={styles.pageContainer}>
+                <ListView 
+                  data={
+                    section === 'devices' ? devicesData :
+                    section === 'ongoing' ? ongoingData :
+                    doneData
+                  } 
+                  onItemPress={handleItemPress} 
+                />
+              </ThemedView>
+            ))}
           </Animated.View>
         </PanGestureHandler>
       </GestureHandlerRootView>
@@ -129,10 +139,8 @@ export default function Activity() {
       <StartSection 
         visible={showStartSection} 
         onClose={() => {
-          setTimeout(() => {
-            setShowStartSection(false);
-            setSelectedItem(null);
-          }, 300);
+          setShowStartSection(false);
+          setSelectedItem(null);
         }} 
         itemDetails={selectedItem}
       />
@@ -142,16 +150,20 @@ export default function Activity() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 1,
+    flex: 1
   },
   container: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 10,
+    alignItems: 'center',
+    paddingTop: 50,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    overflow: 'hidden'
   },
   gestureContainer: {
     flex: 1,
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
   contentContainer: {
     flex: 1,
@@ -159,6 +171,33 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 3,
   },
   pageContainer: {
-    width: SCREEN_WIDTH,
+    width: SCREEN_WIDTH - 32,
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    marginHorizontal: 16,
+    marginVertical: 8,
+    elevation: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 8
+  },
+  sectionButton: {
+    padding: 10,
+    borderRadius: 8,
+    minWidth: 90,
+    alignItems: 'center'
+  },
+  activeSectionButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)'
+  },
+  sectionText: {
+    fontSize: 14,
+    fontFamily: 'Roboto-Medium',
+    letterSpacing: 0.25
+  },
+  activeSectionText: {
+    color: '#ffffff'
+  },
+  inactiveSectionText: {
+    color: '#E1F5FE'
   }
 });

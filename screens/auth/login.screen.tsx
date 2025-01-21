@@ -29,10 +29,8 @@ export default function Login() {
     }
   
     setIsLoading(true);
-  
     try {
       const response = await login({ email, password });
-      // console.log('Login response:', response);
   
       if (response.status) {
         await Promise.all([
@@ -41,16 +39,24 @@ export default function Login() {
           AsyncStorage.setItem('userEmail', email),
           AsyncStorage.setItem('userData', JSON.stringify(response.user))
         ]);
-        router.replace('/(tabs)');
+  
+        Alert.alert("Berhasil masuk", "Selamat datang Kembali!", [
+          {
+            text: "OK",
+            onPress: () => {
+              router.replace('/(tabs)');
+            },
+          },
+        ]);
       } else {
         Alert.alert('Error', response.message || 'Invalid credentials');
       }
-    } catch (error: any) {
-      console.error('Login error:', error); // Log the error for debugging
-      Alert.alert('Error', 'Unable to connect to server. Please try again.');
+    } catch (error : any) {
+      console.error('Login error:', error);
+      Alert.alert('Error', error.message || 'Unable to connect to server. Please try again.');
     } finally {
       setIsLoading(false);
-    }
+    }    
   };
 
   return (
@@ -65,7 +71,7 @@ export default function Login() {
       >
         <Image
           style={styles.imageLogin}
-          source={require('@/assets/images/dryfitech.png')}
+          source={require('@/assets/images/dryfitechlogo.png')}
         />
         <View style={styles.content}>
           <View style={styles.inputContainer}>

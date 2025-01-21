@@ -22,14 +22,14 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const interval = setInterval(async () => {
       const authenticated = await isLoggedIn();
       setIsAuthenticated(authenticated);
       setAuthChecked(true);
-    };
-
-    checkAuth();
-  }, []);
+    }, 1000);
+  
+    return () => clearInterval(interval);
+  }, []);  
 
   useEffect(() => {
     if (!authChecked || !loaded) return;
@@ -59,11 +59,11 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen 
           name="(tabs)" 
-          redirect={!isAuthenticated}
+          redirect={!isAuthenticated} 
         />
         <Stack.Screen 
           name="(routers)/auth/login" 
-          redirect={isAuthenticated}
+          redirect={isAuthenticated} 
         />
         <Stack.Screen name="+not-found" />
       </Stack>

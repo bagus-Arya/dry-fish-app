@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, FlatList, ActivityIndicator, Alert } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { MaterialIcons } from '@expo/vector-icons'; 
@@ -56,9 +56,18 @@ export default function Home() {
     try {
       await AsyncStorage.clear();
       await logout();
-      router.replace('/(routers)/auth/login'); 
+      
+      Alert.alert("Berhasil Keluar", "Kamu sudah Keluar.", [
+        {
+          text: "OK",
+          onPress: () => {
+            router.replace('/(routers)/auth/login');
+          },
+        },
+      ]);
     } catch (error) {
-      router.replace('/(routers)/auth/login'); 
+      console.error("Logout error:", error);
+      Alert.alert("Logout Failed", "An error occurred while logging out.");
     }
   };
 
