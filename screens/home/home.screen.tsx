@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, FlatList, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, Switch, View, FlatList, ActivityIndicator, Alert } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { MaterialIcons } from '@expo/vector-icons'; 
@@ -19,6 +19,12 @@ export default function Home() {
   const [deviceData, setDeviceData] = useState<DeviceLogs[]>([]);
   const router = useRouter();
   const colorScheme = useColorScheme();
+
+  const [light1, setLight1] = useState(false);
+  const [light2, setLight2] = useState(false);
+
+  const toggleLight1 = () => setLight1(previousState => !previousState);
+  const toggleLight2 = () => setLight2(previousState => !previousState);
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -105,8 +111,8 @@ export default function Home() {
           <LinearGradient
             colors={
               colorScheme === 'dark' 
-                ? ['#0F2027', '#203A43', '#2C5364'] // Dark mode colors
-                : ['#0F78BE', '#1BFFFF'] // Light mode colors
+                ? ['#0F2027', '#203A43', '#2C5364'] 
+                : ['#0F78BE', '#1BFFFF']
             }
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -124,6 +130,29 @@ export default function Home() {
                 <MaterialIcons name='logout' size={30} color="#fff" />
               </TouchableOpacity>
             </View>
+
+            {/* Switches */}
+            <View style={styles.switchContainer}>
+              <View style={styles.switchWrapper}>
+                <ThemedText style={styles.switchLabel}>Lampu</ThemedText>
+                <Switch
+                  value={light1}
+                  onValueChange={toggleLight1}
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={light1 ? "#65fca2" : "#f4f3f4"}
+                />
+              </View>
+              <View style={styles.switchWrapper}>
+                <ThemedText style={styles.switchLabel}>Pemanas</ThemedText>
+                <Switch
+                  value={light2}
+                  onValueChange={toggleLight2}
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={light2 ? "#65fca2" : "#f4f3f4"}
+                />
+              </View>
+            </View>
+
           </LinearGradient>
         </ThemedView>
 
@@ -205,5 +234,23 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  switchWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  switchLabel: {
+    marginRight: 10,
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
